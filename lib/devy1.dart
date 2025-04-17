@@ -77,8 +77,9 @@ class _ThawafTrackingScreenState extends State<ThawafTrackingScreen> {
     }
 
     LocationSettings locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.high, // Replace with desired accuracy
-      distanceFilter: 0, // Minimum distance before an update is triggered
+      accuracy:
+          LocationAccuracy.bestForNavigation, // Replace with desired accuracy
+      distanceFilter: 10, // Minimum distance before an update is triggered
     );
 
     final position =
