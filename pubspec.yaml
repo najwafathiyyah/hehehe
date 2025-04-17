@@ -31,13 +31,15 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_map: ^4.0.0  # Untuk menampilkan OpenStreetMap di Flutter
-  geolocator: ^10.1.0   # Untuk mendeteksi lokasi pengguna
-  latlong2: ^0.8.1
+  latlong2: ^0.8.2
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  geolocator: ^13.0.2
+  geocoding: ^3.0.0   # Tambahkan ini
+  intl: ^0.18.0       # Untuk format waktu
 
 dev_dependencies:
   flutter_test:

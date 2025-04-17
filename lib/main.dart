@@ -3,17 +3,17 @@ import 'secondpage.dart';
 import 'homepage.dart';
 import 'thawaf_tracker.dart';
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor:
+            Colors.transparent, // Membuat latar belakang transparan
+      ),
       home: FirstScreen(),
-    );
-  }
+    ),
+  );
 }
 
 class FirstScreen extends StatelessWidget {
@@ -22,234 +22,320 @@ class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'E-Muthawif',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "E-Muthawif",
-            style: TextStyle(
-                fontSize: 24,
-                color: Color.fromARGB(
-                    255, 255, 255, 255) // Ubah ukuran font sesuai kebutuhan
-                ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFE0F7FA), // soft biru muda
+                Color(0xFFFFFFFF), // putih
+              ],
+            ),
           ),
-          centerTitle: true, // Menempatkan judul di tengah
-        ),
-        body: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.center, // Memusatkan konten secara vertikal
-              crossAxisAlignment: CrossAxisAlignment
-                  .stretch, // Memastikan elemen mengisi lebar yang tersedia
-              children: <Widget>[
-                // Logo
-                Image.asset(
-                  'assets/images/logo.png', // Sesuaikan dengan path logo Anda
-                  height: 100, // Sesuaikan ukuran logo
-                ),
-                const SizedBox(height: 16), // Jarak antara logo dan teks
-
-                // Judul
-                const Text(
-                  'Mulailah Sekarang',
-                  style: TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment
+                    .center, // Memusatkan konten secara vertikal
+                crossAxisAlignment: CrossAxisAlignment
+                    .stretch, // Memastikan elemen mengisi lebar yang tersedia
+                children: <Widget>[
+                  // Logo
+                  Image.asset(
+                    'assets/images/logo.png', // Sesuaikan dengan path logo Anda
+                    height: 100, // Sesuaikan ukuran logo
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
+                  const SizedBox(height: 16), // Jarak antara logo dan teks
 
-                // Deskripsi
-                const Text(
-                  'Buat akun atau masuk untuk menjelajahi aplikasi kami',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors
-                          .grey // Menyesuaikan ukuran font agar lebih terbaca
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
+                  // Judul
+                  const Text(
+                    'Mulailah Sekarang',
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
 
-                // Tombol Masuk dan Daftar
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 15), // Margin samping 24
-                      child: TextButton(
-                        child: const Text(
-                          'Masuk',
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors
-                                  .black), // Mengubah warna teks menjadi hitam
+                  // Deskripsi
+                  const Text(
+                    'Buat akun atau masuk untuk menjelajahi aplikasi kami',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors
+                            .grey // Menyesuaikan ukuran font agar lebih terbaca
                         ),
-                        onPressed: () {
-                          // Aksi untuk tombol Masuk
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 15), // Margin samping 24
-                      child: TextButton(
-                        child: const Text(
-                          'Daftar',
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors
-                                  .black), // Mengubah warna teks menjadi hitam
-                        ),
-                        onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return SignUpPage();
-                          }));
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-
-// TextField Nama Lengkap
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 15), // Margin samping 24
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Nama Lengkap',
-                      labelStyle: TextStyle(
-                        fontSize: 16, // Mengubah ukuran teks label
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(10), // Mengubah corner radius
-                      ),
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 12),
+                  const SizedBox(height: 20),
 
-// TextField NIK
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 15), // Margin samping 24
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'NIK',
-                      labelStyle: TextStyle(
-                        fontSize: 16, // Mengubah ukuran teks label
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(10), // Mengubah corner radius
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2),
-
-// Checkbox Ingat Saya
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 15), // Margin samping 24
-                  child: RememberMeCheckbox(),
-                ),
-                const SizedBox(height: 2),
-
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 15), // Margin samping 15
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets
-                          .zero, // Menghilangkan padding default ElevatedButton
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            10), // Mengubah border radius menjadi 10
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return HomePage();
-                      }));
-                    },
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(
-                                255, 144, 224, 239), // Warna awal gradasi
-                            Color.fromARGB(
-                                255, 0, 180, 216), // Warna akhir gradasi
+                  // Tombol Masuk dan Daftar
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 2),
+                            ),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(
-                            10), // Border radius untuk gradasi
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                // setState(() {
+                                //   isRegisterSelected =
+                                //       false; // Set ke false, sehingga Masuk yang aktif
+                                // });
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FirstScreen()));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 8),
+                                decoration: BoxDecoration(
+                                  // color: isRegisterSelected // Ubah logika ini
+                                  //     ? Colors.white
+                                  //     : Colors
+                                  //         .cyan, // Masuk aktif, Daftar tidak aktif
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Text(
+                                  'Masuk',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    // color: isRegisterSelected
+                                    //     ? Colors
+                                    //         .cyan // Masuk warna cyan jika aktif
+                                    //     : Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 4), // pemisah kecil
+                            GestureDetector(
+                              onTap: () {
+                                // setState(() {
+                                //   isRegisterSelected =
+                                //       true; // Set ke true, sehingga Daftar yang aktif
+                                // });
+                                // Aksi untuk tombol Daftar
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 10),
+                                decoration: BoxDecoration(
+                                  // color: isRegisterSelected
+                                  //     ? Colors
+                                  //         .cyan // Daftar aktif, Masuk tidak aktif
+                                  //     : Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Text(
+                                  'Daftar',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    // color: isRegisterSelected
+                                    //     ? Colors
+                                    //         .white // Daftar warna putih jika aktif
+                                    //     : Colors.cyan,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10), // Padding tombol
-                        alignment: Alignment.center, // Menengahkan teks
-                        child: const Text(
-                          'Masuk',
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+
+// TextField Nama Lengkap
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Nama Lengkap',
                           style: TextStyle(
-                            fontSize: 13,
-                            color: Colors
-                                .white, // Mengubah warna teks menjadi putih
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          decoration: InputDecoration(
+                            isDense:
+                                true, // Penting! Biar TextField jadi compact
+                            //hintText: 'Tulis nama lengkap anda...',
+                            //hintStyle: TextStyle(color: Colors.grey),
+                            filled: true,
+                            fillColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 8, // Ubah ini buat atur tinggi
+                              horizontal: 5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+// TextField NIK
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'NIK',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          decoration: InputDecoration(
+                            isDense:
+                                true, // Penting! Biar TextField jadi compact
+                            //hintText: 'Tulis nama lengkap anda...',
+                            //hintStyle: TextStyle(color: Colors.grey),
+                            filled: true,
+                            fillColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 8, // Ubah ini buat atur tinggi
+                              horizontal: 5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+
+// Checkbox Ingat Saya
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 15), // Margin samping 24
+                    child: RememberMeCheckbox(),
+                  ),
+                  const SizedBox(height: 2),
+
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 15), // Margin samping 15
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets
+                            .zero, // Menghilangkan padding default ElevatedButton
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Mengubah border radius menjadi 10
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return HomePage();
+                        }));
+                      },
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromARGB(
+                                  255, 144, 224, 239), // Warna awal gradasi
+                              Color.fromARGB(
+                                  255, 0, 180, 216), // Warna akhir gradasi
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(
+                              10), // Border radius untuk gradasi
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10), // Padding tombol
+                          alignment: Alignment.center, // Menengahkan teks
+                          child: const Text(
+                            'Masuk',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors
+                                  .white, // Mengubah warna teks menjadi putih
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 170),
+                  const SizedBox(height: 170),
 
-                // Persyaratan Layanan
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 39.0), // Margin samping
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Dengan mendaftar, Anda menyetujui ',
-                          style: TextStyle(fontSize: 10, color: Colors.grey),
-                        ),
-                        TextSpan(
-                          text: 'Persyaratan Layanan ',
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: 'dan ',
-                          style: TextStyle(fontSize: 10, color: Colors.grey),
-                        ),
-                        TextSpan(
-                          text: 'Perjanjian Pemrosesan Data',
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                  // Persyaratan Layanan
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 39.0), // Margin samping
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Dengan mendaftar, Anda menyetujui ',
+                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                          TextSpan(
+                            text: 'Persyaratan Layanan ',
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(
+                            text: 'dan ',
+                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                          TextSpan(
+                            text: 'Perjanjian Pemrosesan Data',
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

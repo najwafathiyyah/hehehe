@@ -14,18 +14,17 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
   bool isTracking = false;
   StreamSubscription<Position>? positionStream;
   int lapCount = 0;
-  bool isNearStartPoint = false;
   LatLng? startPoint;
   LatLng? currentPosition;
   static const double threshold = 0.00005; // Sekitar 5 meter dalam koordinat
   final MapController mapController = MapController();
 
+  int currentQuadrant = 0;
+  List<int> quadrantSequence = [];
+
   @override
   void initState() {
     super.initState();
-    trackPoints = [];
-    isTracking = false;
-    lapCount = 0;
     _initializeLocation();
   }
 
@@ -35,6 +34,8 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location services are disabled.')));
       return;
     }
 
@@ -42,6 +43,8 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
         return;
       }
     }
@@ -51,29 +54,13 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
 
     setState(() {
       currentPosition = LatLng(position.latitude, position.longitude);
-      startPoint = currentPosition;
+      if (startPoint == null) {
+        startPoint = currentPosition;
+      }
     });
   }
 
-  bool _isNearPoint(LatLng point1, LatLng point2) {
-    return (point1.latitude - point2.latitude).abs() < threshold &&
-        (point1.longitude - point2.longitude).abs() < threshold;
-  }
-
-  void _checkLapCompletion(LatLng position) {
-    if (startPoint != null && _isNearPoint(position, startPoint!)) {
-      if (!isNearStartPoint && trackPoints.length > 20) {
-        setState(() {
-          lapCount++;
-        });
-        isNearStartPoint = true;
-      }
-    } else {
-      isNearStartPoint = false;
-    }
-  }
-
-  void startTracking() async {
+  void startTracking() {
     if (startPoint == null) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Waiting for GPS location...')));
@@ -84,7 +71,8 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
       isTracking = true;
       trackPoints.clear();
       lapCount = 0;
-      isNearStartPoint = false;
+      quadrantSequence.clear();
+      currentQuadrant = 0;
     });
 
     positionStream = Geolocator.getPositionStream(
@@ -112,6 +100,68 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
     positionStream?.cancel();
   }
 
+  int _determineQuadrant(LatLng position) {
+    // Logika menentukan kuadran berdasarkan posisi
+    if (_isPointInPolygon(position, [
+      LatLng(-7.276590, 112.793885), //sudut
+      LatLng(-7.27659, 112.79207175340067), //barat
+      LatLng(-7.278388643211837, 112.793885), //selatan
+    ])) {
+      return 1;
+    } else if (_isPointInPolygon(position, [
+      LatLng(-7.276590, 112.793885), //sudut
+      LatLng(-7.278388643211837, 112.793885), //selatan
+      LatLng(-7.27659, 112.7956982465994), //timur
+    ])) {
+      return 2;
+    } else if (_isPointInPolygon(position, [
+      LatLng(-7.276590, 112.793885), //sudut
+      LatLng(-7.27659, 112.7956982465994), //timur
+      LatLng(-7.274791356788162, 112.793885), //utara
+    ])) {
+      return 3;
+    } else if (_isPointInPolygon(position, [
+      LatLng(-7.276590, 112.793885), //sudut
+      LatLng(-7.274791356788162, 112.793885), //utara
+      LatLng(-7.27659, 112.7920717534006), //barat
+    ])) {
+      return 4;
+    }
+    return 0;
+  }
+
+  bool _isPointInPolygon(LatLng point, List<LatLng> polygon) {
+    int intersectCount = 0;
+    for (int i = 0; i < polygon.length; i++) {
+      LatLng p1 = polygon[i];
+      LatLng p2 = polygon[(i + 1) % polygon.length];
+      if ((p1.latitude > point.latitude) != (p2.latitude > point.latitude) &&
+          (point.longitude <
+              (p2.longitude - p1.longitude) *
+                      (point.latitude - p1.latitude) /
+                      (p2.latitude - p1.latitude) +
+                  p1.longitude)) {
+        intersectCount++;
+      }
+    }
+    return intersectCount % 2 == 1;
+  }
+
+  void _checkLapCompletion(LatLng position) {
+    int detectedQuadrant = _determineQuadrant(position);
+    if (detectedQuadrant != 0 && detectedQuadrant != currentQuadrant) {
+      setState(() {
+        currentQuadrant = detectedQuadrant;
+        quadrantSequence.add(detectedQuadrant);
+
+        if (quadrantSequence.join() == '12340') {
+          lapCount++;
+          quadrantSequence.clear();
+        }
+      });
+    }
+  }
+
   @override
   void dispose() {
     positionStream?.cancel();
@@ -121,29 +171,32 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Thawaf Tracker")),
+      backgroundColor: const Color.fromARGB(255, 247, 246, 246),
+      appBar: AppBar(
+        title: const Text("Dummy Thawaf"),
+        titleTextStyle: TextStyle(fontSize: 18),
+        centerTitle: true,
+      ),
       body: Stack(
         children: [
           FlutterMap(
             mapController: mapController,
             options: MapOptions(
-              center: currentPosition ??
-                  LatLng(-7.276590, 112.793885), // Pusat Ka'bah
+              center: currentPosition ?? LatLng(-7.276590, 112.793885),
               zoom: 18.0,
             ),
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.app',
-                //ignoreLocationMarker: true,
               ),
               PolygonLayer(
                 polygons: [
                   Polygon(
                     points: [
-                      LatLng(-7.276590, 112.793885), // Sudut 1 (pusat ka'bah)
-                      LatLng(-7.276586, 112.793757), // Sudut 2 (hajar aswad)
-                      LatLng(-7.276718, 112.793885), // Sudut 3 (yamani)
+                      LatLng(-7.276590, 112.793885),
+                      LatLng(-7.27659, 112.79207175340067),
+                      LatLng(-7.278388643211837, 112.793885),
                     ],
                     color: Colors.blue.withOpacity(0.3),
                     borderColor: Colors.blue,
@@ -151,9 +204,9 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
                   ),
                   Polygon(
                     points: [
-                      LatLng(-7.276590, 112.793885), // Sudut 1 (pusat ka'bah)
-                      LatLng(-7.276718, 112.793885), // Sudut 2 (yamani)
-                      LatLng(-7.276594, 112.794026), // Sudut 3 (syami)
+                      LatLng(-7.276590, 112.793885),
+                      LatLng(-7.278388643211837, 112.793885),
+                      LatLng(-7.27659, 112.7956982465994),
                     ],
                     color: Colors.red.withOpacity(0.3),
                     borderColor: Colors.red,
@@ -161,9 +214,9 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
                   ),
                   Polygon(
                     points: [
-                      LatLng(-7.276590, 112.793885), // Sudut 1 (pusat ka'bah)
-                      LatLng(-7.276594, 112.794026), // Sudut 2 (syami)
-                      LatLng(-7.276458, 112.793892), // Sudut 3 (iraqi)
+                      LatLng(-7.276590, 112.793885),
+                      LatLng(-7.27659, 112.7956982465994),
+                      LatLng(-7.274791356788162, 112.793885),
                     ],
                     color: Colors.green.withOpacity(0.3),
                     borderColor: Colors.green,
@@ -171,9 +224,9 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
                   ),
                   Polygon(
                     points: [
-                      LatLng(-7.276590, 112.793885), // Sudut 1 (pusat ka'bah)
-                      LatLng(-7.276458, 112.793892), // Sudut 2 (iraqi)
-                      LatLng(-7.276586, 112.793757), // Sudut 3 (hajar aswad)
+                      LatLng(-7.276590, 112.793885),
+                      LatLng(-7.274791356788162, 112.793885),
+                      LatLng(-7.27659, 112.7920717534006),
                     ],
                     color: Colors.purple.withOpacity(0.3),
                     borderColor: Colors.purple,
@@ -198,17 +251,10 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
                       point: currentPosition!,
                       width: 30,
                       height: 30,
-                      builder: (context) => Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.7),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: const Icon(
-                          Icons.person_pin_circle,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      builder: (context) => const Icon(
+                        Icons.location_pin,
+                        color: Colors.red,
+                        size: 30,
                       ),
                     ),
                   if (startPoint != null)
@@ -216,62 +262,72 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
                       point: startPoint!,
                       width: 30,
                       height: 30,
-                      builder: (context) => Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.7),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: const Icon(
-                          Icons.start,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      builder: (context) => const Icon(
+                        Icons.star,
+                        color: Colors.green,
+                        size: 30,
                       ),
                     ),
                 ],
               ),
             ],
           ),
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    'Putaran: $lapCount',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+          DraggableScrollableSheet(
+            initialChildSize: 0.3,
+            minChildSize: 0.1,
+            maxChildSize: 0.5,
+            builder: (context, scrollController) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Putaran: $lapCount',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Progres: ${((lapCount / 10) * 100).toStringAsFixed(1)}%',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        FloatingActionButton(
+                          onPressed: () {
+                            if (isTracking) {
+                              stopTracking();
+                            } else {
+                              startTracking();
+                            }
+                          },
+                          child:
+                              Icon(isTracking ? Icons.stop : Icons.play_arrow),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                FloatingActionButton(
-                  onPressed: () {
-                    if (isTracking) {
-                      stopTracking();
-                    } else {
-                      startTracking();
-                    }
-                  },
-                  child: Icon(isTracking ? Icons.stop : Icons.play_arrow),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),

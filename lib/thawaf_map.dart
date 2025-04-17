@@ -7,7 +7,12 @@ class ThawafMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Thawaf Tracker")),
+      backgroundColor: const Color.fromARGB(255, 247, 246, 246),
+      appBar: AppBar(
+        title: Text("Thawaf"),
+        titleTextStyle: TextStyle(fontSize: 18),
+        centerTitle: true,
+      ),
       body: FlutterMap(
         options: MapOptions(
           center: LatLng(21.4225, 39.8262), // Lokasi Ka'bah
