@@ -18,17 +18,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Devy2(),
+      home: rumahcua(),
     );
   }
 }
 
-class Devy2 extends StatefulWidget {
+class rumahcua extends StatefulWidget {
   @override
-  _Devy2State createState() => _Devy2State();
+  _rumahcuaState createState() => _rumahcuaState();
 }
 
-class _Devy2State extends State<Devy2> {
+class _rumahcuaState extends State<rumahcua> {
   Position? _currentPosition;
   Position? _previousPosition;
   int _crossCount = 0;
@@ -42,11 +42,11 @@ class _Devy2State extends State<Devy2> {
 
   // Koordinat untuk bentuk plus
   final List<LatLng> _polygonCoords = [
-    LatLng(-7.276590, 112.793885), // [0] Pusat
-    LatLng(-7.274791356788162, 112.793885), // [1] Utara
-    LatLng(-7.27659, 112.7920717534006), // [2] Barat
-    LatLng(-7.278388643211837, 112.793885), // [3] Selatan
-    LatLng(-7.27659, 112.7956982465994), // [4] Timur
+    LatLng(-7.330520, 112.747260), // [0] Pusat
+    LatLng(-7.330952, 112.747229), // [1] Utara
+    LatLng(-7.330532, 112.747581), // [2] Barat
+    LatLng(-7.330200, 112.747298), // [3] Selatan
+    LatLng(-7.330498, 112.746935), // [4] Timur
   ];
 
   @override
@@ -299,9 +299,9 @@ class _Devy2State extends State<Devy2> {
               polygons: [
                 Polygon(
                   points: [
-                    LatLng(-7.276590, 112.793885),
-                    LatLng(-7.27659, 112.7956982465994),
-                    LatLng(-7.274791356788162, 112.793885),
+                    LatLng(-7.330520, 112.747260),
+                    LatLng(-7.330498, 112.746935),
+                    LatLng(-7.330952, 112.747229),
                   ],
                   color: Colors.blue.withOpacity(0.3),
                   borderColor: Colors.blue,
@@ -309,9 +309,9 @@ class _Devy2State extends State<Devy2> {
                 ),
                 Polygon(
                   points: [
-                    LatLng(-7.276590, 112.793885),
-                    LatLng(-7.274791356788162, 112.793885),
-                    LatLng(-7.27659, 112.7920717534006),
+                    LatLng(-7.330520, 112.747260),
+                    LatLng(-7.330952, 112.747229),
+                    LatLng(-7.330532, 112.747581),
                   ],
                   color: Colors.red.withOpacity(0.3),
                   borderColor: Colors.red,
@@ -319,9 +319,9 @@ class _Devy2State extends State<Devy2> {
                 ),
                 Polygon(
                   points: [
-                    LatLng(-7.276590, 112.793885),
-                    LatLng(-7.27659, 112.7920717534006),
-                    LatLng(-7.278388643211837, 112.793885),
+                    LatLng(-7.330520, 112.747260),
+                    LatLng(-7.330532, 112.747581),
+                    LatLng(-7.330200, 112.747298),
                   ],
                   color: Colors.green.withOpacity(0.3),
                   borderColor: Colors.green,
@@ -329,9 +329,9 @@ class _Devy2State extends State<Devy2> {
                 ),
                 Polygon(
                   points: [
-                    LatLng(-7.276590, 112.793885),
-                    LatLng(-7.278388643211837, 112.793885),
-                    LatLng(-7.27659, 112.7956982465994),
+                    LatLng(-7.330520, 112.747260),
+                    LatLng(-7.330200, 112.747298),
+                    LatLng(-7.330498, 112.746935),
                   ],
                   color: Colors.purple.withOpacity(0.3),
                   borderColor: Colors.purple,

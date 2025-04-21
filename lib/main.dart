@@ -16,8 +16,15 @@ void main() {
   );
 }
 
-class FirstScreen extends StatelessWidget {
+class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
+
+  @override
+  _FirstScreenState createState() => _FirstScreenState();
+}
+
+class _FirstScreenState extends State<FirstScreen> {
+  bool isRegisterSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +36,8 @@ class FirstScreen extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFFE0F7FA), // soft biru muda
-                Color(0xFFFFFFFF), // putih
+                Color(0xFFE0F7FA),
+                Color(0xFFFFFFFF),
               ],
             ),
           ),
@@ -38,19 +45,14 @@ class FirstScreen extends StatelessWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment
-                    .center, // Memusatkan konten secara vertikal
-                crossAxisAlignment: CrossAxisAlignment
-                    .stretch, // Memastikan elemen mengisi lebar yang tersedia
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  // Logo
                   Image.asset(
-                    'assets/images/logo.png', // Sesuaikan dengan path logo Anda
-                    height: 100, // Sesuaikan ukuran logo
+                    'assets/images/logo.png',
+                    height: 100,
                   ),
-                  const SizedBox(height: 16), // Jarak antara logo dan teks
-
-                  // Judul
+                  const SizedBox(height: 16),
                   const Text(
                     'Mulailah Sekarang',
                     style: TextStyle(
@@ -61,20 +63,14 @@ class FirstScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
-
-                  // Deskripsi
                   const Text(
                     'Buat akun atau masuk untuk menjelajahi aplikasi kami',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors
-                            .grey // Menyesuaikan ukuran font agar lebih terbaca
-                        ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
 
-                  // Tombol Masuk dan Daftar
+                  /// Tombol masuk dan daftar
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -96,65 +92,57 @@ class FirstScreen extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                // setState(() {
-                                //   isRegisterSelected =
-                                //       false; // Set ke false, sehingga Masuk yang aktif
-                                // });
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => FirstScreen()));
+                                setState(() {
+                                  isRegisterSelected = false;
+                                });
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24, vertical: 8),
                                 decoration: BoxDecoration(
-                                  // color: isRegisterSelected // Ubah logika ini
-                                  //     ? Colors.white
-                                  //     : Colors
-                                  //         .cyan, // Masuk aktif, Daftar tidak aktif
+                                  color: isRegisterSelected
+                                      ? Colors.white
+                                      : Colors.cyan,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Masuk',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    // color: isRegisterSelected
-                                    //     ? Colors
-                                    //         .cyan // Masuk warna cyan jika aktif
-                                    //     : Colors.white,
+                                    color: isRegisterSelected
+                                        ? Colors.cyan
+                                        : Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 4), // pemisah kecil
+                            const SizedBox(width: 4),
                             GestureDetector(
                               onTap: () {
-                                // setState(() {
-                                //   isRegisterSelected =
-                                //       true; // Set ke true, sehingga Daftar yang aktif
-                                // });
-                                // Aksi untuk tombol Daftar
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SignUpPage()), // Ganti dengan nama halaman kamu
+                                );
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24, vertical: 10),
                                 decoration: BoxDecoration(
-                                  // color: isRegisterSelected
-                                  //     ? Colors
-                                  //         .cyan // Daftar aktif, Masuk tidak aktif
-                                  //     : Colors.white,
+                                  color: isRegisterSelected
+                                      ? Colors.cyan
+                                      : Colors.white,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Daftar',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    // color: isRegisterSelected
-                                    //     ? Colors
-                                    //         .white // Daftar warna putih jika aktif
-                                    //     : Colors.cyan,
+                                    color: isRegisterSelected
+                                        ? Colors.white
+                                        : Colors.cyan,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

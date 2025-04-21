@@ -16,6 +16,7 @@ import 'koni_maps.dart';
 import 'devy1.dart';
 import 'devy2.dart';
 import 'cobadevy1.dart';
+import 'rumahcua.dart';
 
 void main() {
   runApp(HomePage());
@@ -159,6 +160,7 @@ class _HomeContentState extends State<HomeContent>
                   _buildAnimatedMenu('Devy 1', ThawafTrackingScreen()),
                   _buildAnimatedMenu('Devy 2', Devy2()),
                   _buildAnimatedMenu('Coba Devy 1', cobadevy1()),
+                  _buildAnimatedMenu('rumahcua', rumahcua())
                 ],
               ),
             ),
