@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   flutter_map: ^4.0.0  # Untuk menampilkan OpenStreetMap di Flutter
   latlong2: ^0.8.2
+  firebase_core: ^2.0.0
+  firebase_database: ^10.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

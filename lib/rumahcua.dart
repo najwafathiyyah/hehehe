@@ -95,32 +95,60 @@ class _rumahcuaState extends State<rumahcua> {
         LatLng(_previousPosition!.latitude, _previousPosition!.longitude);
 
     // Cek crossing antara pusat dan setiap titik
-    if (_isLineCrossing(
-        previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[1])) {
+    //if (_isLineCrossing(
+    //    previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[1])) {
+    //  setState(() {
+    //    _crossCount = 1; // Thawaf 1/4
+    //  });
+    //} else if (_isLineCrossing(
+    //    previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[2])) {
+    //  setState(() {
+    //    _crossCount = 2; // Thawaf 2/4
+    //  });
+    //} else if (_isLineCrossing(
+    //    previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[3])) {
+    //  setState(() {
+    //    _crossCount = 3; // Thawaf 3/4
+    //  });
+    //} else if (_isLineCrossing(
+    //    previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[4])) {
+    //  setState(() {
+    //    _crossCount = 4; // Thawaf 4/4
+    //    _completedRounds++;
+    //    _crossCount = 0; // Reset ke awal
+    //  });
+    //}
+
+    // sistem anti-double count
+    if (_crossCount == 0 &&
+        _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
+            _polygonCoords[1])) {
       setState(() {
-        _crossCount = 1; // Thawaf 1/4
+        _crossCount = 1; // Lewat garis Utara
       });
-    } else if (_isLineCrossing(
-        previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[2])) {
+    } else if (_crossCount == 1 &&
+        _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
+            _polygonCoords[2])) {
       setState(() {
-        _crossCount = 2; // Thawaf 2/4
+        _crossCount = 2; // Lewat garis Barat
       });
-    } else if (_isLineCrossing(
-        previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[3])) {
+    } else if (_crossCount == 2 &&
+        _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
+            _polygonCoords[3])) {
       setState(() {
-        _crossCount = 3; // Thawaf 3/4
+        _crossCount = 3; // Lewat garis Selatan
       });
-    } else if (_isLineCrossing(
-        previousLatLng, currentLatLng, _polygonCoords[0], _polygonCoords[4])) {
+    } else if (_crossCount == 3 &&
+        _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
+            _polygonCoords[4])) {
       setState(() {
-        _crossCount = 4; // Thawaf 4/4
-        _completedRounds++;
-        _crossCount = 0; // Reset ke awal
+        _crossCount = 0; // Reset setelah 4/4
+        _completedRounds++; // Tambah 1 putaran
       });
     }
 
     // Tampilkan dialog kalau udah 7 putaran
-    if (_completedRounds == 2) {
+    if (_completedRounds == 7) {
       //aku ubah ke 2 dulu buat nyoba, nanti bisa diubah ke 7 lagi
       showDialog(
         context: context,
@@ -136,34 +164,6 @@ class _rumahcuaState extends State<rumahcua> {
         ),
       );
     }
-
-    // sistem anti-double count
-    //if (_crossCount == 0 &&
-    // _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
-    //   _polygonCoords[1])) {
-    //  setState(() {
-    //  _crossCount = 1; // Lewat garis Utara
-    // });
-    // } else if (_crossCount == 1 &&
-    //    _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
-    //        _polygonCoords[2])) {
-    //  setState(() {
-    //    _crossCount = 2; // Lewat garis Barat
-    //  });
-    //} else if (_crossCount == 2 &&
-    //    _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
-    //        _polygonCoords[3])) {
-    //  setState(() {
-    //    _crossCount = 3; // Lewat garis Selatan
-    //   });
-    //  } else if (_crossCount == 3 &&
-    //    _isLineCrossing(previousLatLng, currentLatLng, _polygonCoords[0],
-    //        _polygonCoords[4])) {
-    //  setState(() {
-    //    _crossCount = 0; // Reset setelah 4/4
-    //    _completedRounds++; // Tambah 1 putaran
-    //   });
-    //  }
   }
 
   // Memeriksa apakah dua garis saling berpotongan
@@ -263,6 +263,7 @@ class _rumahcuaState extends State<rumahcua> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight), // Ukuran AppBar
         child: AppBar(
+          centerTitle: true,
           title: Center(
             child: Text(
               'Thawaf Tracker',
@@ -433,7 +434,7 @@ class _rumahcuaState extends State<rumahcua> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Progress Thawaf: 0/4',
+                        'Progress Thawaf: ${_crossCount}/4',
                         style: TextStyle(fontSize: 16),
                       ),
                       SizedBox(height: 8),
