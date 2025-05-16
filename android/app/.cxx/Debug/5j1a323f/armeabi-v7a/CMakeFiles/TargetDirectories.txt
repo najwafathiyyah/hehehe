@@ -1,0 +1,2 @@
+D:/Aplikasi/eMuthawif/android/app/.cxx/Debug/5j1a323f/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/Aplikasi/eMuthawif/android/app/.cxx/Debug/5j1a323f/armeabi-v7a/CMakeFiles/rebuild_cache.dir

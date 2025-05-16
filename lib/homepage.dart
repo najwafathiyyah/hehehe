@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'kotlin_update.dart';
 import 'thawafpage.dart';
 import 'saipage.dart';
 import 'thawaf_map.dart';
@@ -9,14 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For formatting time
 import 'package:geolocator/geolocator.dart'; // For getting location
 import 'package:geocoding/geocoding.dart'; // For reverse geocoding
-import 'reallocation1.dart';
-import 'reallocation2.dart';
-import 'koni_google.dart';
-import 'koni_maps.dart';
+import 'rumahcua2.dart';
+import 'ujicoba1.dart';
+import 'rumahcuaupdate.dart';
 import 'devy1.dart';
 import 'devy2.dart';
-import 'cobadevy1.dart';
+import 'tes.dart';
 import 'rumahcua.dart';
+import 'kotlin.dart';
+import 'nonbtsassist.dart';
 
 void main() {
   runApp(HomePage());
@@ -151,16 +153,18 @@ class _HomeContentState extends State<HomeContent>
                 children: [
                   _buildAnimatedMenu('Thawaf', ThawafMap()),
                   _buildAnimatedMenu('Sa\'i', SaiPage()),
-                  _buildAnimatedMenu('Dummy Thawaf', DummyThawafPage()),
-                  _buildAnimatedMenu('Dummy Sa\'i', DummySaiPage()),
-                  _buildAnimatedMenu('Dummy Real Location 1', Reallocation1()),
-                  _buildAnimatedMenu('Dummy Real Location 2', Reallocation2()),
-                  _buildAnimatedMenu('Koni Google Earth', KoniGooglePage()),
-                  _buildAnimatedMenu('Koni GPS', KoniMapsPage()),
-                  _buildAnimatedMenu('Devy 1', ThawafTrackingScreen()),
-                  _buildAnimatedMenu('Devy 2', Devy2()),
-                  _buildAnimatedMenu('Coba Devy 1', cobadevy1()),
-                  _buildAnimatedMenu('rumahcua', rumahcua())
+                  // _buildAnimatedMenu('Dummy Thawaf', DummyThawafPage()),
+                  // _buildAnimatedMenu('Dummy Sa\'i', DummySaiPage()),
+                  // _buildAnimatedMenu('Dummy Real Location 1', Reallocation1()),
+                  _buildAnimatedMenu('Dummy BTS Assist', rumahcua2()),
+                  // _buildAnimatedMenu('GPS Page', GPSPage()),
+                  _buildAnimatedMenu('Dummy Non BTS Assist', GPSPageUpdate()),
+                  //_buildAnimatedMenu('Dummy Non BTS Assist 2', GPSPageUpdate2()),
+                  // _buildAnimatedMenu('Devy 1', ThawafTrackingScreen1()),
+                  // _buildAnimatedMenu('Devy 2', Devy2()),
+                  // _buildAnimatedMenu('Tes', ()),
+                  // _buildAnimatedMenu('rumahcua', rumahcua()),
+                  // _buildAnimatedMenu('rumahcuaupdate', rumahcuaupdate()),
                 ],
               ),
             ),

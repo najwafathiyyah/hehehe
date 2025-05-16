@@ -2,12 +2,13 @@ plugins {
     id "com.android.application"
     id "kotlin-android" 
     id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
 }
 
 android {
     namespace "com.example.hehehe"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdkVersion 35  // Gunakan versi SDK yang benar
+    ndkVersion "25.1.8937393"  // Versi NDK yang benar
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -21,9 +22,8 @@ android {
     defaultConfig {
         applicationId "com.example.hehehe"
         multiDexEnabled true
-        minSdkVersion 21
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -36,6 +36,8 @@ android {
 
     dependencies {
         implementation 'androidx.multidex:multidex:2.0.1'
+        implementation platform('com.google.firebase:firebase-bom:33.13.0')
+        implementation 'com.google.firebase:firebase-analytics'
     }
 }
 

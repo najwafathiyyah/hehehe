@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'homepage.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,17 +18,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SaITrackingScreen(),
+      home: ThawafTrackingScreen1(),
     );
   }
 }
 
-class SaITrackingScreen extends StatefulWidget {
+class ThawafTrackingScreen1 extends StatefulWidget {
   @override
-  _SaITrackingScreenState createState() => _SaITrackingScreenState();
+  _ThawafTrackingScreen1State createState() => _ThawafTrackingScreen1State();
 }
 
-class _SaITrackingScreenState extends State<SaITrackingScreen> {
+class _ThawafTrackingScreen1State extends State<ThawafTrackingScreen1> {
   Position? _currentPosition;
   Position? _previousPosition;
   int _crossCount = 0;
@@ -37,6 +38,7 @@ class _SaITrackingScreenState extends State<SaITrackingScreen> {
   LatLng? startPoint;
   LatLng? currentPosition;
   StreamSubscription<Position>? positionStream;
+  String trackingMode = 'Real'; // langsung isi default
 
   // Koordinat untuk bentuk plus
   final List<LatLng> _polygonCoords = [
@@ -134,25 +136,57 @@ class _SaITrackingScreenState extends State<SaITrackingScreen> {
         (pj.longitude - pi.longitude) * (pk.latitude - pi.latitude);
   }
 
-  void startTracking() async {
-    if (_currentPosition == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Waiting for GPS location...')),
-      );
-      return;
-    }
+  void startTracking() {
+    setState(() {
+      isTracking = true;
+      _crossCount = 0;
+      _completedRounds = 0;
+      trackPoints.clear();
 
-    positionStream = Geolocator.getPositionStream().listen((Position position) {
-      setState(() {
-        currentPosition = LatLng(position.latitude, position.longitude);
-        _previousPosition = _currentPosition; // Simpan posisi sebelumnya
-        _currentPosition = position;
-        isTracking = true;
-        trackPoints.add(currentPosition!); // Menyimpan track posisi
-      });
-
-      _checkPolygonCrossing(); // Memeriksa crossing
+      if (_currentPosition != null) {
+        trackPoints.add(LatLng(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+        ));
+      }
     });
+
+    if (trackingMode == 'Real') {
+      // REAL GPS Tracking
+      if (_currentPosition == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Waiting for GPS location...')),
+        );
+        return;
+      }
+
+      positionStream =
+          Geolocator.getPositionStream().listen((Position position) {
+        setState(() {
+          currentPosition = LatLng(position.latitude, position.longitude);
+          _previousPosition = _currentPosition; // Simpan posisi sebelumnya
+          _currentPosition = position;
+          isTracking = true;
+          trackPoints.add(currentPosition!); // Menyimpan track posisi
+        });
+
+        _checkPolygonCrossing(); // Memeriksa crossing
+      });
+    } else if (trackingMode == 'Real New') {
+      // REAL GPS Tracking
+      positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 1,
+        ),
+      ).listen((Position position) {
+        setState(() {
+          _currentPosition = position;
+          trackPoints.add(LatLng(position.latitude, position.longitude));
+          _checkPolygonCrossing();
+        });
+      });
+    }
   }
 
   void stopTracking() {
@@ -187,10 +221,8 @@ class _SaITrackingScreenState extends State<SaITrackingScreen> {
         children: [
           FlutterMap(
             options: MapOptions(
-              center: _currentPosition != null
-                  ? LatLng(
-                      _currentPosition!.latitude, _currentPosition!.longitude)
-                  : LatLng(-7.2491, 112.7508), // Default ke koordinat Surabaya
+              center: LatLng(
+                  _currentPosition!.latitude, _currentPosition!.longitude),
               zoom: 17,
             ),
             children: [
@@ -260,17 +292,10 @@ class _SaITrackingScreenState extends State<SaITrackingScreen> {
                       point: currentPosition!,
                       width: 30,
                       height: 30,
-                      builder: (context) => Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.7),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: const Icon(
-                          Icons.person_pin_circle,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      builder: (context) => const Icon(
+                        Icons.location_pin,
+                        color: Colors.blue,
+                        size: 20,
                       ),
                     ),
                   if (startPoint != null)
@@ -278,22 +303,48 @@ class _SaITrackingScreenState extends State<SaITrackingScreen> {
                       point: startPoint!,
                       width: 30,
                       height: 30,
-                      builder: (context) => Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.7),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: const Icon(
-                          Icons.start,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      builder: (context) => const Icon(
+                        Icons.location_pin,
+                        color: Colors.green,
+                        size: 20,
                       ),
                     ),
                 ],
               ),
             ],
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            right: 16,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  )
+                ],
+              ),
+              child: DropdownButton<String>(
+                value: trackingMode,
+                underline: Container(),
+                icon: Icon(Icons.arrow_drop_down),
+                style: TextStyle(color: Colors.black, fontSize: 16),
+                onChanged: (String? newValue) {
+                  setState(() => trackingMode = newValue!);
+                },
+                items: ['Real', 'Real New'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
           DraggableScrollableSheet(
             initialChildSize: 0.3,
@@ -317,30 +368,24 @@ class _SaITrackingScreenState extends State<SaITrackingScreen> {
                         style: TextStyle(fontSize: 18, color: Colors.green),
                       ),
                     ),
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          FloatingActionButton(
-                            onPressed: () {
-                              if (isTracking) {
-                                stopTracking();
-                              } else {
-                                startTracking();
-                              }
-                            },
-                            child: Icon(
-                                isTracking ? Icons.stop : Icons.play_arrow),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               );
             },
+          ),
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: FloatingActionButton(
+              onPressed: () {
+                if (isTracking) {
+                  stopTracking();
+                } else {
+                  startTracking();
+                }
+              },
+              child: Icon(isTracking ? Icons.stop : Icons.play_arrow),
+            ),
           ),
         ],
       ),

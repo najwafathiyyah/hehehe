@@ -101,7 +101,6 @@ class _DummyThawafPageState extends State<DummyThawafPage> {
   }
 
   int _determineQuadrant(LatLng position) {
-    // Logika menentukan kuadran berdasarkan posisi
     if (_isPointInPolygon(position, [
       LatLng(-7.276590, 112.793885), //sudut
       LatLng(-7.27659, 112.79207175340067), //barat

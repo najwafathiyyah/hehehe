@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "211115135732",
+    "project_id": "thawaf-adf26",
+    "storage_bucket": "thawaf-adf26.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211115135732:android:e188e2be8749c0b56444a1",
+        "android_client_info": {
+          "package_name": "com.example.hehehe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-bFgYnIcOnQKxrcsM6QSSRvXHCPsVyfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
